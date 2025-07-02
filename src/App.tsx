@@ -10,6 +10,9 @@ import UserAuctions from "./pages/UserAuctions";
 import CreateAuction from "./pages/CreateAuction";
 import EditAuction from "./pages/EditAuction";
 import AuctionsList from "./pages/AuctionsList";
+import MyProducts from "./pages/MyProducts";
+import CreateProduct from "./pages/CreateProduct";
+import EditProduct from "./pages/EditProduct";
 
 export default function App() {
   return (
@@ -26,6 +29,9 @@ export default function App() {
         <Route path="/crear-subasta" element={<CreateAuction />} />
         <Route path="/subasta/editar/:id" element={<EditAuction />} />
         <Route path="/subastas" element={<AuctionsList />} />
+        <Route path="/productos" element={<MyProducts />} />
+        <Route path="/productos/crear" element={<CreateProduct />} />
+        <Route path="/productos/editar/:id" element={<EditProduct />} />
         {/* Agregaremos más rutas aquí */}
       </Routes>
     </Router>
