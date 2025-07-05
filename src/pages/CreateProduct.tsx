@@ -36,7 +36,7 @@ export default function CreateProduct() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ product: form }),
       });
 
       const data = await res.json();

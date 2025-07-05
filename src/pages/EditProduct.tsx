@@ -46,14 +46,17 @@ export default function EditProduct() {
       const res = await fetch(`http://localhost:8080/api/products/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          product: form // Envuelve el form en un objeto "product"
+        }),
       });
 
       if (res.ok) {
         alert("Producto actualizado correctamente");
         navigate("/productos"); // redirige a la lista
       } else {
-        alert("No se pudo actualizar el producto");
+        const errorData = await res.json();
+        alert(errorData.message || "No se pudo actualizar el producto");
       }
     } catch {
       alert("Error de red al actualizar producto");
