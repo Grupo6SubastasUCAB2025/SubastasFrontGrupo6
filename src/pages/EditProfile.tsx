@@ -1,15 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+
+interface DecodedToken {
+  name: string;
+  email: string;
+  phone: string;
+  cedula: string;
+}
 
 export default function EditProfile() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
-    username: "",
     email: "",
     phone: "",
-    address: "",
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode<DecodedToken>(token);
+      setForm({
+        name: decoded.name || "",
+        email: decoded.email || "",
+        phone: decoded.phone || "",
+      });
+    } catch (error) {
+      console.error("Error al decodificar el token:", error);
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,7 +43,6 @@ export default function EditProfile() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí llamarías a la API para actualizar
     console.log("Datos enviados:", form);
     navigate("/profile");
   };
@@ -29,6 +54,7 @@ export default function EditProfile() {
         className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4"
       >
         <h2 className="text-2xl font-bold text-center">Editar Perfil</h2>
+
         <input
           type="text"
           name="name"
@@ -37,14 +63,7 @@ export default function EditProfile() {
           onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded"
         />
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded"
-        />
+
         <input
           type="email"
           name="email"
@@ -53,19 +72,12 @@ export default function EditProfile() {
           onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded"
         />
+
         <input
           type="tel"
           name="phone"
           placeholder="Teléfono"
           value={form.phone}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded"
-        />
-        <input
-          type="text"
-          name="address"
-          placeholder="Dirección"
-          value={form.address}
           onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded"
         />
@@ -75,6 +87,14 @@ export default function EditProfile() {
           className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
         >
           Guardar Cambios
+        </button>
+
+        <button
+          type="button"
+          onClick={() => navigate("/change-password")}
+          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+        >
+          Cambiar Contraseña
         </button>
       </form>
     </div>

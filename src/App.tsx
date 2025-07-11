@@ -13,6 +13,8 @@ import AuctionsList from "./pages/AuctionsList";
 import MyProducts from "./pages/MyProducts";
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
+import ChangePassword from "./pages/ChangePassword";
+import RecoverPassword from "./pages/RecoverPassword";
 
 export default function App() {
   return (
@@ -32,6 +34,8 @@ export default function App() {
         <Route path="/productos" element={<MyProducts />} />
         <Route path="/productos/crear" element={<CreateProduct />} />
         <Route path="/productos/editar/:id" element={<EditProduct />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/recuperar-contrasena" element={<RecoverPassword />} />
         {/* Agregaremos más rutas aquí */}
       </Routes>
     </Router>
