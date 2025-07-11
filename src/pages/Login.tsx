@@ -1,36 +1,50 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom"; // Asegúrate de importar Link
 
 interface LoginData {
-  email: string;
+  userEmail: string;
   password: string;
 }
 
 export default function Login() {
-  const [form, setForm] = useState<LoginData>({ email: "", password: "" });
+  const [form, setForm] = useState<LoginData>({ userEmail: "", password: "" });
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5085/api/user/login", {
+      const res = await fetch("https://localhost:7020/Auth/Login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
-      const data = await res.json();
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch (jsonError) {
+        console.error("Error al parsear JSON:", jsonError);
+      }
 
-      if (res.ok) {
+      if (res.ok && data?.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("refreshToken", data.refreshToken);
         alert("Inicio de sesión exitoso");
-        // Aquí podrías guardar el token, redirigir, etc.
+        navigate("/profile");
       } else {
-        alert(data.message || "Error al iniciar sesión");
+        alert(data?.message || `Error al iniciar sesión: ${res.status}`);
       }
     } catch (error) {
+      console.error("Error en la petición:", error);
       alert("Error al conectar con el servidor");
     }
   };
@@ -44,9 +58,9 @@ export default function Login() {
         <h2 className="text-2xl font-bold text-center text-gray-700">Iniciar Sesión</h2>
         <input
           type="email"
-          name="email"
+          name="userEmail"
           placeholder="Correo"
-          value={form.email}
+          value={form.userEmail}
           onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded"
           required
@@ -66,6 +80,16 @@ export default function Login() {
         >
           Iniciar Sesión
         </button>
+
+        {/* Enlace de recuperación de contraseña */}
+        <div className="text-right mt-2">
+          <Link
+            to="/recuperar-contrasena"
+            className="text-sm text-blue-600 hover:underline"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </div>
       </form>
     </div>
   );
